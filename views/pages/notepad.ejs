@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<style>
+  html, body {
+    height:100%;
+  }
+
+  .notepad {
+    height:92%;
+    margin-top: -50px;
+  }
+
+  .notepad textarea {
+    background-color: #f0f099;
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    line-height: 44px;
+    font-family:Helvetica;
+    font-size: 14pt;
+  }
+
+
+</style>
+
+<body>
+
+  <% include ../partials/noteNav.ejs %>
+
+<div class="notepad">
+  <textarea id="notepad-textarea"><%=results.field %></textarea>
+</div>
+<textarea id="channelValue" style="visibility:hidden;display:none;"><%=results.channel %></textarea>
+
+</body>
+<script>
+var channel;
+$(document).ready(function(){
+  channel = $("#channelValue").val();
+  //console.log(channel);
+
+});
+
+$(document).keypress(function (event){
+  //console.log(event);
+});
+
+
+
+var lastRequestSent="";
+function saveCurrentContext() {
+  //Date.getTime();
+  var currentField = $("#notepad-textarea").val();
+  console.log("saveCurrentContext()");
+  console.log(currentField);
+  $.post('/notes', {"channel":channel, "field":currentField}, function(result) {
+    console.log(result);
+  });
+}
+
+
+
+
+var controlPressed=false;
+var savePressed=false;
+
+$(document).delegate('textarea', 'keyup', function(e) {
+  console.log(e);
+  var keyCode = e.keyCode || e.which;
+  if (keyCode == 17) {
+    controlPressed=false;
+  }
+
+});
+$(document).delegate('textarea', 'keydown', function(e) {
+  console.log(e);
+  var keyCode = e.keyCode || e.which;
+
+
+  if (keyCode == 83 && controlPressed && e.type==="keydown") {
+    e.preventDefault();
+    saveCurrentContext();
+  }
+
+  if (keyCode == 17) {
+    controlPressed=true;
+  }
+
+  // rebind tab key with actual tab
+  if (keyCode == 9) {
+    e.preventDefault();
+    var start = $(this).get(0).selectionStart;
+    var end = $(this).get(0).selectionEnd;
+
+    // set textarea value to: text before caret + tab + text after caret
+    $(this).val($(this).val().substring(0, start)
+                + "\t"
+                + $(this).val().substring(end));
+
+    // put caret at right position again
+    $(this).get(0).selectionStart =
+    $(this).get(0).selectionEnd = start + 1;
+  }
+
+
+
+
+});
+</script>
+</html>
