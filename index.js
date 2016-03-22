@@ -24,29 +24,3 @@ app.listen(app.get('port'), function() {
 
 
 var pg = require('pg');
-
-app.get('/db', function (request, response) {
-  pg.connect(DATABASE_URL, function(err, client, done) {
-    client.query('SELECT * FROM note', function(err, result) {
-      done();
-      if (err)
-       { console.error(err); response.send("Error " + err); }
-      else
-       { response.render('pages/db', {results: result.rows} ); }
-    });
-  });
-})
-
-app.get('/allNotes', function(request, response) {
-  pg.connect(DATABASE_URL, function(err, client, done) {
-    client.query('SELECT * FROM note', function(err, result) {
-      done();
-      if (err)
-       { console.error(err); response.send("Error " + err); }
-      else
-       { /*response.render('pages/db', {results: result.rows} );*/
-          response.send(result.rows);
-        }
-    });
-  });
-});

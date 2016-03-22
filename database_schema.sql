@@ -1,7 +1,7 @@
-DROP TABLE if exists note cascade;
+DROP TABLE if exists blah cascade;
 
-CREATE TABLE note (
+CREATE TABLE blah (
   id serial primary key,
-  channel text,
-  field text
+  blahhhh text,
+  blahhhhhh text
 );
